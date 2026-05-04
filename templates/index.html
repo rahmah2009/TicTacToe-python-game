@@ -2,330 +2,47 @@
 <html>
 
 <head>
-    <title>
-        <h1>⚡ NeoTic Arena</h1>
-        <p>Choose your battle mode</p>
-    </title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
-            color: white;
-            margin: 0;
-        }
-
-        /* Titles */
-        h1 {
-            margin-top: 50px;
-            font-size: 2.5em;
-            color: #00ffe1;
-        }
-
-        p {
-            opacity: 0.8;
-        }
-
-        /* Buttons */
-        button {
-            padding: 10px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 10px;
-            background: #00ffe1;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        /* Screens */
-        .screen {
-            display: none;
-        }
-
-        .active {
-            display: block;
-        }
-
-        /* Board */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 110px);
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .cell {
-            width: 110px;
-            height: 110px;
-            font-size: 2.5em;
-            border-radius: 12px;
-            background: #222;
-            color: white;
-            border: 2px solid #00ffe1;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .cell:hover {
-            background: #00ffe1;
-            color: black;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-content {
-            background: white;
-            color: black;
-            padding: 25px;
-            margin: 20% auto;
-            width: 220px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px #00ffe1;
-        }
-    </style>
-
+    <title>NeoTic Arena</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-
-    <!-- MODE SCREEN -->
     <div id="menu" class="screen active">
-        <h1>Tic Tac Toe 🎮</h1>
-        <button onclick="startGame('pvp')">Two Players</button>
-        <button onclick="startGame('ai')">Play vs AI</button>
+        <h1>⚡ NeoTic Arena</h1>
+        <button onclick="setMode('pvp')">👥 Two Players</button>
+        <button onclick="setMode('ai')">🤖 Play vs AI</button>
     </div>
 
-    <!-- GAME SCREEN -->
     <div id="game" class="screen">
+        <div id="gameScoreboard">
+            <div class="score-row">❌ X: <span id="xScore">0</span></div>
+            <div class="score-row">⭕ O: <span id="oScore">0</span></div>
+            <div class="score-row">🤝 Draw: <span id="dScore">0</span></div>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h2 id="winnerText"></h2>
+                <button onclick="closeModal()">Next Round</button>
+            </div>
+        </div>
         <h2 id="modeTitle"></h2>
-
-        <div class="board" id="board"></div>
-
-        <br>
-
-        <button onclick="goBack()">⬅ Back</button>
-        <button onclick="resetGame()">🔄 Reset</button>
-        <button onclick="clearGame()">🧹 Clear</button>
-    </div>
-
-    <!-- POPUP -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <h2 id="winnerText"></h2>
-            <button onclick="closeModal()">OK</button>
+        <div id="aiThinking" class="thinking hidden">🤖 AI is thinking...</div>
+        <div id="board" class="board"></div>
+        <div class="controls">
+            <button onclick="goBack()">⬅ Back</button>
+            <button onclick="resetGame()">🔄 Reset</button>
+            <button onclick="clearScore()">🧹 Clear Score</button>
         </div>
     </div>
 
-    <script>
-        let board;
-        let currentPlayer;
-        let mode;
-
-        // ---------- INIT ----------
-        function startGame(selectedMode) {
-            mode = selectedMode;
-            board = [
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""]
-            ];
-            currentPlayer = "X";
-
-            document.getElementById("menu").classList.remove("active");
-            document.getElementById("game").classList.add("active");
-
-            document.getElementById("modeTitle").innerText =
-                mode === "ai"
-                    ? "🤖 Battle vs AI (Neural Mode)"
-                    : "👥 Duel Mode (Player vs Player)";
-
-            drawBoard();
-        }
-
-        // ---------- DRAW ----------
-        function drawBoard() {
-            const boardDiv = document.getElementById("board");
-            boardDiv.innerHTML = "";
-
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 3; j++) {
-                    const btn = document.createElement("button");
-                    btn.className = "cell";
-                    btn.innerText = board[i][j];
-
-                    btn.onclick = () => move(i, j);
-
-                    boardDiv.appendChild(btn);
-                }
-            }
-        }
-
-        // ---------- MOVE ----------
-        function move(i, j) {
-            if (board[i][j] !== "") return;
-
-            board[i][j] = currentPlayer;
-            drawBoard();
-
-            if (checkWinner(currentPlayer)) {
-                return showWinner(currentPlayer + " wins 🎉");
-            }
-
-            if (isDraw()) {
-                return showWinner("It's a draw 🤝");
-            }
-
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
-
-            if (mode === "ai" && currentPlayer === "O") {
-                setTimeout(aiMove, 150); // super fast AI
-            }
-        }
-
-        // ---------- AI (MINIMAX) ----------
-        function aiMove() {
-            let bestScore = -999;
-            let move;
-
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 3; j++) {
-                    if (board[i][j] === "") {
-                        board[i][j] = "O";
-                        let score = minimax(board, 0, false);
-                        board[i][j] = "";
-
-                        if (score > bestScore) {
-                            bestScore = score;
-                            move = { i, j };
-                        }
-                    }
-                }
-            }
-
-            board[move.i][move.j] = "O";
-            drawBoard();
-
-            if (checkWinner("O")) {
-                return showWinner("AI wins 🤖🔥");
-            }
-
-            if (isDraw()) {
-                return showWinner("It's a draw 🤝");
-            }
-
-            currentPlayer = "X";
-        }
-
-        function goBack() {
-            // reset game state
-            board = [
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""]
-            ];
-            currentPlayer = "X";
-
-            // hide modal if open
-            document.getElementById("modal").style.display = "none";
-
-            // switch screens
-            document.getElementById("game").classList.remove("active");
-            document.getElementById("menu").classList.add("active");
-        }
-
-        function minimax(board, depth, isMax) {
-            if (checkWinner("O")) return 10 - depth;
-            if (checkWinner("X")) return depth - 10;
-            if (isDraw()) return 0;
-
-            if (isMax) {
-                let best = -999;
-                for (let i = 0; i < 3; i++) {
-                    for (let j = 0; j < 3; j++) {
-                        if (board[i][j] === "") {
-                            board[i][j] = "O";
-                            best = Math.max(best, minimax(board, depth + 1, false));
-                            board[i][j] = "";
-                        }
-                    }
-                }
-                return best;
-            } else {
-                let best = 999;
-                for (let i = 0; i < 3; i++) {
-                    for (let j = 0; j < 3; j++) {
-                        if (board[i][j] === "") {
-                            board[i][j] = "X";
-                            best = Math.min(best, minimax(board, depth + 1, true));
-                            board[i][j] = "";
-                        }
-                    }
-                }
-                return best;
-            }
-        }
-
-        // ---------- CHECKS ----------
-        function checkWinner(p) {
-            for (let i = 0; i < 3; i++) {
-                if (board[i].every(c => c === p)) return true;
-                if (board.map(r => r[i]).every(c => c === p)) return true;
-            }
-
-            if ([board[0][0], board[1][1], board[2][2]].every(c => c === p)) return true;
-            if ([board[0][2], board[1][1], board[2][0]].every(c => c === p)) return true;
-
-            return false;
-        }
-
-        function isDraw() {
-            return board.flat().every(c => c !== "");
-        }
-
-        // ---------- POPUP ----------
-        function showWinner(text) {
-            document.getElementById("winnerText").innerText = text;
-            document.getElementById("modal").style.display = "block";
-
-            // Auto reset after 1.5 seconds
-            setTimeout(() => {
-                document.getElementById("modal").style.display = "none";
-                startGame(mode); // restart current mode automatically
-            }, 1500);
-        }
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-
-        // ---------- RESET ----------
-        function resetGame() {
-            startGame(mode);
-        }
-
-        // ---------- CLEAR ----------
-        function clearGame() {
-            document.getElementById("game").classList.remove("active");
-            document.getElementById("menu").classList.add("active");
-        }
-    </script>
-
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="winnerText"></h2>
+            <button onclick="closeModal()">Play Again</button>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
 </body>
 
 </html>
