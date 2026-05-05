@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NeoTic Arena - Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2 id="modeTitle"></h2>
+
+<div id="gameScoreboard">
+    <div class="score-row">❌ X: <span id="xScore">0</span></div>
+    <div class="score-row">⭕ O: <span id="oScore">0</span></div>
+    <div class="score-row">🤝 Draw: <span id="dScore">0</span></div>
+</div>
+
+<div id="aiThinking" class="hidden">🤖 AI is thinking...</div>
+
+<div id="board"></div>
+
+<div class="controls">
+    <button onclick="goBack()">⬅ Menu</button>
+    <button onclick="resetGame()">🔄 Reset</button>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2 id="winnerText"></h2>
+        <button onclick="closeModal()">Play Again</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

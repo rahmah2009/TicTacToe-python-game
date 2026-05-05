@@ -1,0 +1,241 @@
+/* Update the body to support centering */
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #0f0f1a;
+    color: white;
+    margin: 0;
+    display: flex;
+    /* Added for centering */
+    flex-direction: column;
+    /* Stack elements vertically */
+    justify-content: center;
+    /* Vertical center */
+    align-items: center;
+    /* Horizontal center */
+    min-height: 100vh;
+    /* Takes up full screen height */
+    overflow-x: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Ensure the menu takes up its own space */
+.menu {
+    display: flex;
+    /* Added for centering */
+    flex-direction: column;
+    /* Added for centering */
+    gap: 10px;
+    /* Space between title and buttons */
+}
+
+/* Rest of your existing CSS remains the same... */
+h1 {
+    color: #00ffe1;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 6px;
+    border: none;
+    background: #00ffe1;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.screen {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, min(25vw, 100px));
+    grid-template-rows: repeat(3, min(25vw, 100px));
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
+    background: #1a1a2e;
+    color: #00ffe1;
+    border: 2px solid #00ffe1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.cell:hover {
+    background: #252545;
+    transform: scale(1.02);
+}
+
+.cell:active {
+    transform: scale(0.95);
+}
+
+/* Animation for when an X or O appears */
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+    }
+
+    80% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.cell:not(:empty) {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hidden {
+    display: none;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #1a1a2e;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+#gameScoreboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+
+    background: rgba(0, 255, 225, 0.08);
+    border: 1px solid #00ffe1;
+    border-radius: 15px;
+
+    padding: 15px 25px;
+    margin: 20px auto;
+
+    width: fit-content;
+
+    box-shadow: 0 0 15px rgba(0, 255, 225, 0.2);
+    backdrop-filter: blur(8px);
+}
+
+.score-row {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+
+    padding: 8px 14px;
+    border-radius: 10px;
+
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 255, 225, 0.3);
+
+    transition: 0.3s ease;
+}
+
+/* Hover effect */
+.score-row:hover {
+    transform: scale(1.05);
+    border-color: #00ffe1;
+    box-shadow: 0 0 10px #00ffe1;
+}
+
+/* Color accents for each score */
+.score-row:nth-child(1) {
+    color: #ff4d4d;
+    /* X */
+}
+
+.score-row:nth-child(2) {
+    color: #00ffe1;
+    /* O */
+}
+
+.score-row:nth-child(3) {
+    color: #ffd166;
+    /* Draw */
+}
+
+/* Animation when an X or O is placed */
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Smooth fade-in for the game board and menu */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulsing effect for the winning line */
+@keyframes winnerGlow {
+    0% {
+        background-color: #1a1a2e;
+        box-shadow: 0 0 5px #00ffe1;
+    }
+
+    50% {
+        background-color: #00ffe133;
+        box-shadow: 0 0 20px #00ffe1;
+    }
+
+    100% {
+        background-color: #1a1a2e;
+        box-shadow: 0 0 5px #00ffe1;
+    }
+}
+
+/* Thinking animation for AI */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
