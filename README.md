@@ -37,8 +37,6 @@ TicTacToe-python-game/
 └── README.md
 ```
 
----
-
 ## How to Run
 
 ### 1. Setup Environment
@@ -62,8 +60,6 @@ pip install flask
 python app.py
 ```
 *Open your browser and click the link: **[http://127.0.0.1:5000](http://127.0.0.1:5000)***
-
----
 
 ## Advanced Game Logic
 
@@ -89,7 +85,7 @@ The scores are stored globally on the Python server. Navigating between PvP and 
 * **Win-Line Highlight:** Add a neon strike-through animation for the winning trio.
 
 ## Author
-Built with LOVE by **Abdulsalam Hanna Kamldin**
+Built with LOVE by **Rammy Jay 🦋**
 
 ## License
 This project is open-source and free to use.
